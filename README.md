@@ -58,7 +58,6 @@ $ mv python original_python
 $ ln -s $CONDA_PREFIX python
 ```
 
-
 ### Compile C++ Source Code
 #### Mac
 in terimal, `cd` to the project folder and
@@ -75,3 +74,7 @@ make -j4
 2. In menu, "File" - "Open" - "CMake", open CMakeList.txt in the project folder
 3. In menu, "CMake" - "Build All"
 4. Don't forgot to change compile mode from Debug to Release.
+
+### Run Blender
+1. Open `blender/MeshPattern.blender`
+2. Click `Run Script`
