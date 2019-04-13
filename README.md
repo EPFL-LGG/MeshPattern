@@ -31,11 +31,39 @@ Before using cmake to compile the file, make sure followings are correct
 * confirm your anaconda python location by typing `which python` in terminal
 * change the `PYTHON_EXECUTABLE` as well as `PYBIND11_PYTHON_VERSION` in `compas_libigl/CMakeLists.txt` if it does not match your system settings.
 
+### Create Conda Enviroment
+1. Download [anaconda3](https://www.anaconda.com/distribution/#download-section)
+2. Either in Windows or Mac Terminal, type:
+``` console
+conda create --name blender python=3.7 compas
+conda activate blender
+pip3 install tessagon
+```
+3. Add the new created python enviroment folder into system enviroment variables if necessary.
+
+### Replace Blender Python
+for details please refer to [Compas Blender](https://compas-dev.github.io/main/environments/blender.html)
+
+#### On Windows
+``` console
+cd %PROGRAMFILES%\Blender Foundation\Blender\2.80
+ren python original_python
+mklink /j python %CONDA_PREFIX%
+```
+
+#### On Mac
+``` consolde
+cd /Applications/blender/blender.app/Contents/Resources/2.80
+$ mv python original_python
+$ ln -s $CONDA_PREFIX python
+```
+
+
 ### Compile C++ Source Code
 #### Mac
 in terimal, `cd` to the project folder and
 
-```console
+``` console
 mkdir build
 cd build
 cmake -DCMAKE_BUILD_TYPE=Release ..
