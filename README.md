@@ -35,6 +35,7 @@ Before using cmake to compile the file, make sure followings are correct
 1. Download [anaconda3](https://www.anaconda.com/distribution/#download-section)
 2. Either in Windows or Mac Terminal, type:
 ``` console
+conda config --add channels conda-forge
 conda create --name blender python=3.7 compas
 conda activate blender
 pip3 install tessagon
