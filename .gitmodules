@@ -7,3 +7,6 @@
 [submodule "ext/ShapeOp"]
 	path = ext/ShapeOp
 	url = https://github.com/EPFL-LGG/ShapeOp.git
+[submodule "ext/eigen"]
+	path = ext/eigen
+	url = https://github.com/libigl/eigen.git
