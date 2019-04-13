@@ -29,7 +29,7 @@ Before using cmake to compile the file, make sure followings are correct
 * `cmake` version >= 3.12
 * `python` version >= 3.7
 * confirm your anaconda python location by typing `which python` in terminal
-* change the `PYTHON_EXECUTABLE` as well as `PYBIND11_PYTHON_VERSION` in `compas_libigl/CMakeLists.txt` if it does not match your system settings.
+* change the `PYTHON_EXECUTABLE` as well as `PYBIND11_PYTHON_VERSION` in `CMakeLists.txt` if it does not match your system settings.
 
 ### Create Conda Enviroment
 1. Download [anaconda3](https://www.anaconda.com/distribution/#download-section)
