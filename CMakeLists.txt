@@ -8,7 +8,7 @@ find_package(Eigen3 REQUIRED)
 
 set(PYBIND11_CPP_STANDARD -std=c++11)
 set(PYBIND11_PYTHON_VERSION 3.7)
-set(PYTHON_EXECUTABLE "C:/Users/ziqwang/AppData/Local/Continuum/anaconda2/envs/blender/python.exe")
+#set(PYTHON_EXECUTABLE "")
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/ext/pybind11)
 
 #Libigl
