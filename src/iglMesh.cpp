@@ -96,10 +96,10 @@ void iglMesh::paramertization_lscm()
 {
     UV_.setZero();
 
-    Eigen::VectorXi bnd,b(2,1);
+    Eigen::VectorXi bnd,b(2);
     igl::boundary_loop(F_,bnd);
     b(0) = bnd(0);
-    b(1) = bnd(round(bnd.size()/2));
+    b(1) = bnd(((int)round(bnd.size() / 2)));
     MatrixXd bc(2,2);
     bc<<0,0,1,0;
     igl::lscm(V_,F_,b,bc,UV_);

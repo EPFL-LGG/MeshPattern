@@ -135,3 +135,8 @@ cmake-build-release/*
 
 .DS_Store
 
+.vs/MeshPattern/v15/.suo
+.vs/MeshPattern/v15/Browse.VC.db
+.vs/MeshPattern/v15/Browse.VC.opendb
+.vs/ProjectSettings.json
+.vs/slnx.sqlite

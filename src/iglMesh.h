@@ -5,7 +5,7 @@
 #ifndef COMPAS_LIBIGL_IGLMESH_H
 #define COMPAS_LIBIGL_IGLMESH_H
 
-#include <eigen3/Eigen/Dense>
+#include <Eigen/Dense>
 #include <vector>
 #include <iostream>
 
