@@ -4,3 +4,6 @@
 [submodule "ext/pybind11"]
 	path = ext/pybind11
 	url = https://github.com/pybind/pybind11.git
+[submodule "ext/ShapeOp"]
+	path = ext/ShapeOp
+	url = https://github.com/EPFL-LGG/ShapeOp.git
