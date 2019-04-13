@@ -67,8 +67,6 @@ if __name__ == "__main__":
 	
 	#Process mesh
 	pattern2D = create2DPattern()
-	mesh.paramertization_simple()
-    
 	mesh.mapMesh3D_AABB(pattern2D)
 	#Return proccessd mesh and get its vertices and faces
 	vertices = pattern2D.getVertices()
