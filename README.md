@@ -43,3 +43,7 @@ make -j4
 ```
 
 #### Windows
+1. Open Visual Studio 2017
+2. In menu, "File" - "Open" - "CMake", open CMakeList.txt in the project folder
+3. In menu, "CMake" - "Build All"
+4. Don't forgot to change compile mode from Debug to Release.

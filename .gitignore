@@ -140,3 +140,4 @@ cmake-build-release/*
 .vs/MeshPattern/v15/Browse.VC.opendb
 .vs/ProjectSettings.json
 .vs/slnx.sqlite
+*.json
