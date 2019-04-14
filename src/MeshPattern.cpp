@@ -16,7 +16,7 @@ PYBIND11_MODULE(MeshPattern, m)
             .def("loadMesh", &iglMesh::loadMesh)
             .def("getUVs", &iglMesh::getUVs)
             .def("getVertices",  &iglMesh::getVertices)
-            .def("getFaces",  &iglMesh::getFaces)
+            .def("getFaces",  &iglMesh::getFaces);
 
 
     py::class_<ShapeOpt>(m, "ShapeOpt")

@@ -14,20 +14,20 @@ Installation
 ## Mac
 Before compiling the c++ source code, make sure you have following tools.
 
-* `cmake` version >= 3.12
-* `python` version >= 3.7
+* `cmake` version >= 3.12 (`brew install cmake`)
+* `python` version >= 3.7 (after install anaconda, it will automatically install python3.7)
 * `anaconda` version >= 2019.03 ([download link](https://www.anaconda.com/distribution/#download-section))
-* `blender` version >= 2.8.0 ([download link](https://compas-dev.github.io/main/environments/blender.html))
+* `blender` version >= 2.8.0 ([download link](https://builder.blender.org/download))
 
 Then, use anaconda to create a new python environment named "blender"
 `````` sh
 $ conda config --add channels conda-forge
 $ conda create --name blender python=3.7 compas 
 $ conda activate blender
-$ pip3 install tessagon
+$ pip install tessagon
 ``````
 
-Confirm the current python version is 3.7 by typing `which python` in terminal and replace blender's python (the directory of blender could be different in your computer, please change it accordingly):
+Confirm the current python version is 3.7 by typing `python --version` in terminal and replace blender's python (the directory of blender could be different in your computer, please change it accordingly):
 `````` sh
 $ cd /Applications/blender/blender.app/Contents/Resources/2.80 
 $ mv python original_python
@@ -35,20 +35,23 @@ $ ln -s $CONDA_PREFIX python
 ``````
 It is better to add blender directory into system enviroment variable `PATH`:
 `````` sh
-nano ~/.bash_profile
+$ nano ~/.bash_profile
 # `add one line in the .bash_profile`
 export PATH=/Applications/blender/blender.app/Contents/MacOS:$PATH
+$ source ~/.bash_profile
+& conda activate blender
 ``````
-Last thing before compiling is to change the settings `PYTHON_EXECUTABLE` of `CMakeLists.txt` in project folder to the new created python enviroment.
+Last thing before compiling is to change the settings `PYTHON_EXECUTABLE` of `CMakeLists.txt` in project folder to the new created python enviroment (you can get it by typing `which python` in the terminal`.
 `````` C
-set(PYTHON_EXECUTABLE "$ENV{HOME}/anaconda3/envs/blender/bin/python3.7")
+#set(PYTHON_EXECUTABLE "$ENV{HOME}/anaconda3/envs/blender/bin/python3.7")
+set(PYTHON_EXECUTABLE YOUR_PYTHON_BIN_FILE_PATH)
 ``````
-Finally, it is time to compile the C++ source code. 
+Finally, it is time to compile the C++ source code. Please first `cd` to the project folder.
 `````` sh
-mkdir build
-cd build
-cmake -DCMAKE_BUILD_TYPE=Release ..
-make -j4
+$ mkdir build
+$ cd build
+$ cmake -DCMAKE_BUILD_TYPE=Release ..
+$ make -j4
 ``````
 If no error occurs, we can open the blender file in `/blender/MeshPattern.blender` and click `Run Script` Button, which will give the the following result:
 
@@ -208,6 +211,7 @@ bool mapPoint3D_simple(Eigen::Vector3d pt, Eigen::Vector3d &barycentric, int &fa
 ``````
 and in `src/iglMesh.cpp` complete this function:
 `````````` C++
+bool iglMesh::mapPoint3D_simple(Eigen::Vector3d pt, Eigen::Vector3d &barycentric, int &faceID){
  if(UV_.isZero()){
         paramertization_simple();
     }
@@ -230,6 +234,7 @@ and in `src/iglMesh.cpp` complete this function:
             inMesh.push_back(false);
         }
     }
+}
 ``````````
 
 ## Lift 2D Pattern
@@ -243,52 +248,32 @@ void mapMesh3D_simple(iglMesh &baseMesh);
 and in `src/iglMesh.cpp` do the following:
 
 ``````` C++
-void iglMesh::mapMesh3D_simple(iglMesh &baseMesh)
+bool iglMesh::mapPoint3D_simple(Eigen::Vector3d pt, Eigen::Vector3d &l, int &faceID)
 {
-    if(UV_.isZero()){
-        parametrization_simple();
-    }
-    
-    vector<bool> inMesh;
-    int count = 0;
-    for(int id = 0; id < baseMesh.V_.rows(); id++)
+    if(UV_.isZero())
     {
-        Eigen::Vector3d pt = baseMesh.V_.row(id);
-        Eigen::Vector3d l(0, 0, 0);
-        int faceID = -1;
-        if(mapPoint3D_simple(pt, l, faceID))
+        return false;
+    }
+    else{
+        Eigen::MatrixXd P(1, 3), L(1, 3);
+        P << pt(0), pt(1), pt(2);
+        for(int id = 0; id < F_.rows(); id++)
         {
             Eigen::MatrixXd A, B, C;
-            getTriFace(faceID, V_, A, B, C);
-            baseMesh.V_.row(id) = A.row(0) * l(0) + B.row(0) * l(1) + C.row(0) * l(2);
-            inMesh.push_back(true);
-        }
-        else{
-            inMesh.push_back(false);
-        }
-    }
-    
-    for(auto it = baseMesh.faces_.begin(); it != baseMesh.faces_.end();)
-    {
-        bool all_in_refMesh = true;
-        for(int jd = 0; jd < (*it).size(); jd++)
-        {
-            int vid = (*it)[jd];
-            if(inMesh[vid] == false){
-                all_in_refMesh = false;
-                break;
+            getTriFace(id, UV_, A, B, C);
+            igl::barycentric_coordinates(P, A, B, C, L);
+            if(L.minCoeff() < -1e-5 || L.maxCoeff() > 1 + 1e-5){
+                continue;
+            }
+            else{
+                l = L.row(0);
+                faceID = id;
+                return true;
             }
         }
-        if(!all_in_refMesh)
-        {
-            it = baseMesh.faces_.erase(it);
-        }
-        else{
-            it++;
-        }
     }
-    
-    baseMesh.cleanMesh();
+
+    return false;
 }
 ```````
 and do not forget to link this function through pybind and recompile C++ source code, in `src/MeshPattern.cpp`
@@ -338,7 +323,7 @@ Yeah! We have our first mesh tessellation result:
 
 ![](image/mesh_tessellation.png width=500px)
 
-Advanced Topic
+Advanced Topics
 ==============================================================
 ## Conformal Mapping
 Libigl offers other advanced parametrization algorithm, like least-square conformal mapping. in `src/iglMesh.h` create a new function
@@ -385,7 +370,7 @@ void iglMesh::mapMesh3D_AABB(iglMesh &baseMesh)
         parametrization_lscm();
     }
 
-    igl::AABB<MatrixXd, 2> tree;
+    igl::AABB< MatrixXd, 2 > tree;
     tree.init(UV_, F_);
 
     vector<bool> inMesh;
@@ -520,6 +505,61 @@ iglMesh iglMesh::saveWireFrame(double thickness, int cylinder_pts)
     mesh.loadMesh(vers, faces);
     return mesh;
 }
+```````
+## Final Blender Python File
+
+``````py
+if __name__ == “__main__“:
+
+   [vertices, faces] = create2DPattern()
+   pattern2D = iglMesh()
+   pattern2D.loadMesh(vertices, faces)
+
+       # you can change here to import your own file, like :
+   # surfaceOBJ = Mesh.from_obj(dir_path + ‘/../data/igloo.obj’)
+   surfaceOBJ = Mesh.from_obj(dir_path + ‘/../data/minimal_surface.obj’)
+
+   # iterate each vertex in compas mesh and swap its Y and Z
+   for key, attr in surfaceOBJ.vertices(True):
+       y = attr[‘y’]
+       attr[‘y’] = -attr[‘z’]
+       attr[‘z’] =  y
+
+   #getting the vertices and faces list from compas mesh
+   vertices, faces = surfaceOBJ.to_vertices_and_faces()
+
+
+   #load iglMesh
+   mesh = iglMesh()
+   mesh.loadMesh(vertices, faces)
+
+   #do parametrization
+   mesh.parametrization_lscm()
+
+   #do lift
+   mesh.mapMesh3D_AABB(pattern2D)
+   vertices = pattern2D.getVertices()
+   faces = pattern2D.getFaces()
+
+   #do shapeop
+   #ShapeOp
+   solver = ShapeOpt()
+   solver.loadMesh(pattern2D)
+   solver.addPlanarConstraint(1.0)
+   solver.addRegularConstraint(1.0)
+   solver.addBoundaryConstraint(1.0)
+   solver.runShapeOp(10)
+   pattern3D = solver.getMesh()
+   vertices = pattern3D.getVertices()
+   faces = pattern3D.getFaces()
+
+   #output wireframe
+   wire = pattern3D.saveWireFrame(0.01, 10)
+   vertices = wire.getVertices()
+   faces = wire.getFaces()
+
+   #draw the mesh in the blender scene
+   drawMeshVF(vertices, faces)
 ``````
 
 <style class="fallback">body{visibility:hidden}</style><script>markdeepOptions={tocStyle:'long'};</script>
