@@ -39,6 +39,9 @@ public:
     void loadMesh(iglMesh &_mesh);
 
     iglMesh getMesh();
+
+public:
+	EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 };
 
 

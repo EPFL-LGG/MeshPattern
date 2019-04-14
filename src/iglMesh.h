@@ -8,7 +8,6 @@
 #include <Eigen/Dense>
 #include <vector>
 #include <iostream>
-
 using std::vector;
 using Eigen::MatrixXd;
 using Eigen::MatrixXi;
@@ -64,6 +63,9 @@ private:
     void cleanMesh();
 
     void getTriFace(int faceID, Eigen::MatrixXd &V, Eigen::MatrixXd &A, Eigen::MatrixXd &B, Eigen::MatrixXd &C);
+
+public:
+		EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 };
 
 

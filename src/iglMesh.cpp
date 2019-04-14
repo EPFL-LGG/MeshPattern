@@ -1,7 +1,6 @@
 //
 // Created by ziqwang on 2019-04-13.
 //
-
 #include "iglMesh.h"
 #include <igl/polygon_mesh_to_triangle_mesh.h>
 #include <igl/remove_duplicate_vertices.h>

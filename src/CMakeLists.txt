@@ -8,4 +8,7 @@ target_link_libraries(MeshPatternLib PRIVATE igl::core ShapeOp)
 pybind11_add_module(MeshPattern MODULE MeshPattern.cpp)
 target_link_libraries(MeshPattern PRIVATE MeshPatternLib)
 
+
 set_target_properties(MeshPattern PROPERTIES LIBRARY_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/lib/")
+set_target_properties(MeshPatternLib PROPERTIES LIBRARY_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/lib/")
+

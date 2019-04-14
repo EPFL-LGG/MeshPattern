@@ -3,6 +3,7 @@
 //
 
 #include "ShapeOpt.h"
+
 #include <igl/boundary_loop.h>
 void ShapeOpt::loadMesh(iglMesh &_mesh)
 {
