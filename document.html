@@ -509,57 +509,57 @@ iglMesh iglMesh::saveWireFrame(double thickness, int cylinder_pts)
 ## Final Blender Python File
 
 ``````py
-if __name__ == “__main__“:
+if __name__ == "__main__":
 
-   [vertices, faces] = create2DPattern()
-   pattern2D = iglMesh()
-   pattern2D.loadMesh(vertices, faces)
+    [vertices, faces] = create2DPattern()
+    pattern2D = iglMesh()
+    pattern2D.loadMesh(vertices, faces)
 
-       # you can change here to import your own file, like :
-   # surfaceOBJ = Mesh.from_obj(dir_path + ‘/../data/igloo.obj’)
-   surfaceOBJ = Mesh.from_obj(dir_path + ‘/../data/minimal_surface.obj’)
+    # you can change here to import your own file, like :
+    # surfaceOBJ = Mesh.from_obj(dir_path + '/../data/igloo.obj')
+    surfaceOBJ = Mesh.from_obj(dir_path + '/../data/minimal_surface.obj')
 
-   # iterate each vertex in compas mesh and swap its Y and Z
-   for key, attr in surfaceOBJ.vertices(True):
-       y = attr[‘y’]
-       attr[‘y’] = -attr[‘z’]
-       attr[‘z’] =  y
+    # iterate each vertex in compas mesh and swap its Y and Z
+    for key, attr in surfaceOBJ.vertices(True):
+        y = attr['y']
+        attr['y'] = -attr['z']
+        attr['z'] =  y
 
-   #getting the vertices and faces list from compas mesh
-   vertices, faces = surfaceOBJ.to_vertices_and_faces()
+    #getting the vertices and faces list from compas mesh
+    vertices, faces = surfaceOBJ.to_vertices_and_faces()
 
 
-   #load iglMesh
-   mesh = iglMesh()
-   mesh.loadMesh(vertices, faces)
+    #load iglMesh
+    mesh = iglMesh()
+    mesh.loadMesh(vertices, faces)
 
-   #do parametrization
-   mesh.parametrization_lscm()
+    #do parametrization
+    mesh.parametrization_lscm()
 
-   #do lift
-   mesh.mapMesh3D_AABB(pattern2D)
-   vertices = pattern2D.getVertices()
-   faces = pattern2D.getFaces()
+    #do lift
+    mesh.mapMesh3D_AABB(pattern2D)
+    vertices = pattern2D.getVertices()
+    faces = pattern2D.getFaces()
 
-   #do shapeop
-   #ShapeOp
-   solver = ShapeOpt()
-   solver.loadMesh(pattern2D)
-   solver.addPlanarConstraint(1.0)
-   solver.addRegularConstraint(1.0)
-   solver.addBoundaryConstraint(1.0)
-   solver.runShapeOp(10)
-   pattern3D = solver.getMesh()
-   vertices = pattern3D.getVertices()
-   faces = pattern3D.getFaces()
+    #do shapeop
+    #ShapeOp
+    solver = ShapeOpt()
+    solver.loadMesh(pattern2D)
+    solver.addPlanarConstraint(1.0)
+    solver.addRegularConstraint(1.0)
+    solver.addBoundaryConstraint(1.0)
+    solver.runShapeOp(10)
+    pattern3D = solver.getMesh()
+    vertices = pattern3D.getVertices()
+    faces = pattern3D.getFaces()
 
-   #output wireframe
-   wire = pattern3D.saveWireFrame(0.01, 10)
-   vertices = wire.getVertices()
-   faces = wire.getFaces()
+    #output wireframe
+    wire = pattern3D.saveWireFrame(0.01, 10)
+    vertices = wire.getVertices()
+    faces = wire.getFaces()
 
-   #draw the mesh in the blender scene
-   drawMeshVF(vertices, faces)
+    #draw the mesh in the blender scene
+    drawMeshVF(vertices, faces)
 ``````
 
 <style class="fallback">body{visibility:hidden}</style><script>markdeepOptions={tocStyle:'long'};</script>
