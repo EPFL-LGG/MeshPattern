@@ -357,6 +357,8 @@ void iglMesh::parametrization_lscm()
 `````
 and don't forgot to link this function through pybind as well as change the parameterization part in blender python code.
 
+![Simple Map](image/simple_map.png width = 500px) ![Conformal Map](image/conformal_map.png width = 500px)
+
 ## AABB Tree
 You probably feel the running time of this mesh tessellation is a little bit too long. This is because we need to check every pattern vertices whether is inside one of the triangle in parametrization area. To reduce the time complexity, applying `libigl AABB` datastructure can accelerate the process by hundred times. in `src/iglMesh.h` add
 ````` C++
@@ -444,6 +446,9 @@ To use it, in blender add these code after lift the pattern in 3D.
     faces = pattern3D.getFaces()
 `````
 
+![Before Opt](image/before_opt.png width = 500px) ![After Opt](image/after_opt.png width = 500px)
+
+
 ## Wireframe
 I found the draw cylinder commands of compas is extremly slow. So I write a simple C++ code to create wireframe of the tessellated mesh. in `src/iglMesh.h`
 `````` C++
@@ -506,6 +511,9 @@ iglMesh iglMesh::saveWireFrame(double thickness, int cylinder_pts)
     return mesh;
 }
 ```````
+
+![](image/wireframe.png width = 600px)
+
 ## Final Blender Python File
 
 ``````py
