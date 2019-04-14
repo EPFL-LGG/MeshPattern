@@ -4,7 +4,7 @@ import sys
 import compas
 from compas.datastructures import Mesh
 from compas.plotters import MeshPlotter
-from compas_blender.utilities import xdraw_mesh
+from compas_blender.utilities import xdraw_mesh, xdraw_cylinders
 from compas.geometry import *
 
 file_dir = os.path.dirname(os.path.realpath(__file__))
@@ -48,6 +48,7 @@ def create2DPattern():
 if __name__ == "__main__":
 	#Use compas to read obj file 
 	surfaceOBJ = Mesh.from_obj(dir_path + '/../data/minimal_surface.obj')
+	#surfaceOBJ = Mesh.from_obj(dir_path + '/data/minimal_surface.obj')
 	
 	vertices, faces = surfaceOBJ.to_vertices_and_faces()
 	for key, attr in surfaceOBJ.vertices(True):
@@ -61,15 +62,25 @@ if __name__ == "__main__":
 	mesh = iglMesh()
 	mesh.loadMesh(vertices, faces)
 	mesh.paramertization_lscm()
-	vertices = mesh.getUVs()
-	faces = mesh.getFaces()
-	#drawMeshVF(vertices, faces)
-	
+
 	#Process mesh
 	pattern2D = create2DPattern()
+	pattern2D.paramertization_simple()
 	mesh.mapMesh3D_AABB(pattern2D)
+
+    #ShapeOp
+	solver = ShapeOpt()
+	solver.loadMesh(pattern2D)
+	solver.addPlanarConstraint(1.0)
+	solver.addBoundaryConstraint(0.5)
+	solver.addRegularConstraint(1.0)
+	solver.runShapeOp(10)
+	pattern3D = solver.getMesh()
+
 	#Return proccessd mesh and get its vertices and faces
-	vertices = pattern2D.getVertices()
-	faces = pattern2D.getFaces()
-	compasMesh = Mesh.from_vertices_and_faces(vertices, faces)
-	xdraw_mesh(vertices, list(compasMesh.edges()), faces)
+
+	
+	wire = pattern3D.saveWireFrame(0.01, 10)
+	vertices = wire.getVertices()
+	faces = wire.getFaces()
+	drawMeshVF(vertices, faces)

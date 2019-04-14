@@ -12,6 +12,7 @@
 using std::vector;
 using Eigen::MatrixXd;
 using Eigen::MatrixXi;
+using Eigen::Vector3d;
 
 class iglMesh {
 public:
@@ -45,6 +46,10 @@ public:
     bool mapPoint3D_simple(Eigen::Vector3d pt, Eigen::Vector3d &l, int &faceID);
 
     void mapMesh3D_AABB(iglMesh &baseMesh);
+
+public:
+
+    iglMesh saveWireFrame(double thickness, int cylinder_pts);
 
 private:
 

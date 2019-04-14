@@ -1,0 +1,57 @@
+     <meta charset="utf-8" emacsmode="-*- markdown -*-"><link rel="stylesheet" href="https://casual-effects.com/markdeep/latest/slate.css?">
+
+                        **Mesh Pattern**
+                           Version 1.0
+
+![](data/final_result.png width="1000px") 
+
+This part of the workshop is discussing how to create mesh tessellation in blender with the help of **pybind(C++)** and **compas(Python)**. 
+
+
+Installation 
+==============================================================
+
+## Mac
+Before compiling the c++ source code, make sure you have following tools.
+
+* `cmake` version >= 3.12
+* `python` version >= 3.7
+* `anaconda` version >= 2019.03 ([download link](https://www.anaconda.com/distribution/#download-section))
+* `blender` version >= 2.8.0 ([download link](https://compas-dev.github.io/main/environments/blender.html))
+
+Then, use anaconda to create a new python environment named "blender"
+`````` sh
+$ conda config --add channels conda-forge
+$ conda create --name blender python=3.7 compas 
+$ conda activate blender
+$ pip3 install tessagon
+``````
+
+Confirm the current python version is 3.7 by typing `which python` in terminal and replace blender's python (the directory of blender could be different in your computer, please change it accordingly):
+`````` sh
+$ cd /Applications/blender/blender.app/Contents/Resources/2.80 
+$ mv python original_python
+$ ln -s $CONDA_PREFIX python
+``````
+It is better to add blender directory into system enviroment variable `PATH`:
+`````` sh
+nano ~/.bash_profile
+# `add one line in the .bash_profile`
+export PATH=/Applications/blender/blender.app/Contents/MacOS:$PATH
+``````
+Last thing before compiling is to change the settings `PYTHON_EXECUTABLE` of `CMakeLists.txt` in project folder to the new created python enviroment.
+`````` C
+set(PYTHON_EXECUTABLE "$ENV{HOME}/anaconda3/envs/blender/bin/python3.7")
+``````
+Finally, it is time to compile the C++ source code. 
+`````` sh
+mkdir build
+cd build
+cmake -DCMAKE_BUILD_TYPE=Release ..
+make -j4
+``````
+If no error occurs, we can open the blender file in `/blender/MeshPattern.blender` and click `Run Script` Button, which will give the the following result:
+
+ 
+<style class="fallback">body{visibility:hidden}</style><script>markdeepOptions={tocStyle:'long'};</script>
+<!-- Markdeep: --><script src="https://casual-effects.com/markdeep/latest/markdeep.min.js?" charset="utf-8"></script>

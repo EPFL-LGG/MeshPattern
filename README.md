@@ -53,7 +53,7 @@ mklink /j python %CONDA_PREFIX%
 ```
 
 #### On Mac
-``` consolde
+``` console
 cd /Applications/blender/blender.app/Contents/Resources/2.80
 $ mv python original_python
 $ ln -s $CONDA_PREFIX python
