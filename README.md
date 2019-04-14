@@ -38,7 +38,7 @@ Before using cmake to compile the file, make sure followings are correct
 conda config --add channels conda-forge
 conda create --name blender python=3.7 compas
 conda activate blender
-pip3 install tessagon
+pip install tessagon
 ```
 3. Add the new created python enviroment folder into system enviroment variables if necessary.
 

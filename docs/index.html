@@ -57,6 +57,49 @@ If no error occurs, we can open the blender file in `/blender/MeshPattern.blende
 
 ![](image/blender_init.png) 
 
+## Windows
+
+Before compiling the c++ source code, make sure you have following tools.
+
+* `Visual Studio 2017`
+* `python` version >= 3.7 (after install anaconda, it will automatically install python3.7)
+* `anaconda` version >= 2019.03 ([download link](https://www.anaconda.com/distribution/#download-section))
+* `blender` version >= 2.8.0 ([download link](https://builder.blender.org/download))
+
+Visual Studio 2017:
+1. Download Visual Studio 2017
+2. Open Visual Studio 2017. Click "Tools" - "Get Tools and Feature" to open the Visual Studio Installer. 
+3. Choose Use C++ and Linux Developement options which would download necessary cmake component.
+
+Create Conda Enviroment
+``` console
+$ conda config --add channels conda-forge
+$ conda create --name blender python=3.7 compas
+$ conda activate blender
+$ pip install tessagon
+```
+
+Replace Blender Python
+
+``` sh
+$ cd %PROGRAMFILES%\Blender Foundation\Blender\2.80
+$ ren python original_python
+$ mklink /j python %CONDA_PREFIX%
+```
+
+Compile C++ Source Code
+
+1. Open Visual Studio 2017
+2. In menu, "File" - "Open" - "CMake", open CMakeList.txt in the project folder
+3. In menu, "CMake" - "Build All"
+4. Don't forgot to change compile mode from Debug to Release.
+
+Run Blender
+
+1. Open `blender/MeshPattern.blender`
+2. Click `Run Script`
+
+
 Load Mesh
 ==============================================================
 
