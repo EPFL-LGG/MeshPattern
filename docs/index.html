@@ -292,7 +292,7 @@ void mapMesh3D_simple(iglMesh &baseMesh);
 and in `src/iglMesh.cpp` do the following:
 
 ``````` C++
-oid iglMesh::mapMesh3D_simple(iglMesh &baseMesh)
+void iglMesh::mapMesh3D_simple(iglMesh &baseMesh)
 {
     if(UV_.isZero()){
         parametrization_simple();
