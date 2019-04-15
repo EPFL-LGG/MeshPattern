@@ -255,45 +255,7 @@ bool mapPoint3D_simple(Eigen::Vector3d pt, Eigen::Vector3d &barycentric, int &fa
 and in `src/iglMesh.cpp` complete this function:
 `````````` C++
 bool iglMesh::mapPoint3D_simple(Eigen::Vector3d pt, Eigen::Vector3d &barycentric, int &faceID){
- if(UV_.isZero()){
-        paramertization_simple();
-    }
-
-    vector<bool> inMesh;
-    int count = 0;
-    for(int id = 0; id < baseMesh.V_.rows(); id++)
-    {
-        Eigen::Vector3d pt = baseMesh.V_.row(id);
-        Eigen::Vector3d l(0, 0, 0);
-        int faceID = -1;
-        if(mapPoint3D_simple(pt, l, faceID))
-        {
-            Eigen::MatrixXd A, B, C;
-            getTriFace(faceID, V_, A, B, C);
-            baseMesh.V_.row(id) = A.row(0) * l(0) + B.row(0) * l(1) + C.row(0) * l(2);
-            inMesh.push_back(true);
-        }
-        else{
-            inMesh.push_back(false);
-        }
-    }
-}
-``````````
-
-## Lift 2D Pattern
-To map from 2D to 3D, store the triange id in uv-space which the point is belong to and recompute the position of the point by using the same barycentric coordinate for the triangle with same id from the original input mesh.
-
-in `src/iglMesh.h`, create a new function called:
-``````` C++
-void mapMesh3D_simple(iglMesh &baseMesh);
-```````
-
-and in `src/iglMesh.cpp` do the following:
-
-``````` C++
-bool iglMesh::mapPoint3D_simple(Eigen::Vector3d pt, Eigen::Vector3d &l, int &faceID)
-{
-    if(UV_.isZero())
+ if(UV_.isZero())
     {
         return false;
     }
@@ -315,9 +277,68 @@ bool iglMesh::mapPoint3D_simple(Eigen::Vector3d pt, Eigen::Vector3d &l, int &fac
             }
         }
     }
-
-    return false;
 }
+``````````
+
+## Lift 2D Pattern
+To map from 2D to 3D, store the triange id in uv-space which the point is belong to and recompute the position of the point by using the same barycentric coordinate for the triangle with same id from the original input mesh.
+
+in `src/iglMesh.h`, create a new function called:
+``````` C++
+void mapMesh3D_simple(iglMesh &baseMesh);
+```````
+
+and in `src/iglMesh.cpp` do the following:
+
+``````` C++
+oid iglMesh::mapMesh3D_simple(iglMesh &baseMesh)
+{
+    if(UV_.isZero()){
+        parametrization_simple();
+    }
+
+    vector<bool> inMesh;
+    int count = 0;
+    for(int id = 0; id < baseMesh.V_.rows(); id++)
+    {
+        Eigen::Vector3d pt = baseMesh.V_.row(id);
+        Eigen::Vector3d l(0, 0, 0);
+        int faceID = -1;
+        if(mapPoint3D_simple(pt, l, faceID))
+        {
+            Eigen::MatrixXd A, B, C;
+            getTriFace(faceID, V_, A, B, C);
+            baseMesh.V_.row(id) = A.row(0) * l(0) + B.row(0) * l(1) + C.row(0) * l(2);
+            inMesh.push_back(true);
+        }
+        else{
+            inMesh.push_back(false);
+        }
+    }
+
+    for(auto it = baseMesh.faces_.begin(); it != baseMesh.faces_.end();)
+    {
+        bool all_in_refMesh = true;
+        for(int jd = 0; jd < (*it).size(); jd++)
+        {
+            int vid = (*it)[jd];
+            if(inMesh[vid] == false){
+                all_in_refMesh = false;
+                break;
+            }
+        }
+        if(!all_in_refMesh)
+        {
+            it = baseMesh.faces_.erase(it);
+        }
+        else{
+            it++;
+        }
+    }
+
+    baseMesh.cleanMesh();
+}
+
 ```````
 and do not forget to link this function through pybind and recompile C++ source code, in `src/MeshPattern.cpp`
 ``````` C++
