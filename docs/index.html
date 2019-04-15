@@ -254,7 +254,7 @@ bool mapPoint3D_simple(Eigen::Vector3d pt, Eigen::Vector3d &barycentric, int &fa
 ``````
 and in `src/iglMesh.cpp` complete this function:
 `````````` C++
-bool iglMesh::mapPoint3D_simple(Eigen::Vector3d pt, Eigen::Vector3d &barycentric, int &faceID){
+bool iglMesh::mapPoint3D_simple(Eigen::Vector3d pt, Eigen::Vector3d &l, int &faceID){
  if(UV_.isZero())
     {
         return false;
@@ -277,6 +277,7 @@ bool iglMesh::mapPoint3D_simple(Eigen::Vector3d pt, Eigen::Vector3d &barycentric
             }
         }
     }
+    return false;
 }
 ``````````
 
