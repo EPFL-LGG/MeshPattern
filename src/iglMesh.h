@@ -8,38 +8,21 @@
 #include <Eigen/Dense>
 #include <vector>
 #include <iostream>
+
 using std::vector;
 using Eigen::MatrixXd;
 using Eigen::MatrixXi;
 using Eigen::Vector3d;
 
-/*
- * A simple interface exchange data from compas mesh and igl mesh
- */
 class iglMesh {
 public:
 
-    //a matrix records vertices' coordinates
-    //n x 3 matrix, n is the number of vertices
-    //v_0^x v_0^y v_0^z
-    //v_1^x v_1^y v_1^z
-    //...
-    //v_n^x v_n^y v_n^z
     MatrixXd V_;
 
-    //a vector list record vertices' indices in each face
-    //each face is a polygon
-    vector<vector<int>> faces_;
-    
-    //faces_ after triangulation.
-    //useful in libigl
-    //m x 3 matrix, m is the number of triangle faces
-    MatrixXi F_;
-    
-    //2D texture coordinates
-    MatrixXd UV_;
-    
-    //IO
+    vector<vector<int>> faces_; //polygonal Mesh
+    MatrixXi F_; //triangle Mesh
+
+    MatrixXd UV_; //uv
 public:
 
     iglMesh(){};
@@ -52,20 +35,27 @@ public:
 
     vector<vector<int>> getFaces();
 
-    //Utility Function
 public:
 
     void parametrization_simple();
-    
-    //Private Function
+
+    void parametrization_lscm();
+
+    void mapMesh3D_simple(iglMesh &baseMesh);
+
+    bool mapPoint3D_simple(Eigen::Vector3d pt, Eigen::Vector3d &barycentric, int &faceID);
+
+    void mapMesh3D_AABB(iglMesh &baseMesh);
+
+public:
+
+    iglMesh saveWireFrame(double thickness, int cylinder_pts);
+
 private:
 
     void cleanMesh();
 
     void getTriFace(int faceID, Eigen::MatrixXd &V, Eigen::MatrixXd &A, Eigen::MatrixXd &B, Eigen::MatrixXd &C);
-
-public:
-		EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 };
 
 
