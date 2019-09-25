@@ -9,9 +9,18 @@
 namespace py = pybind11;
 using namespace pybind11::literals;
 
+int add(int i, int j){
+    return i + j;
+}
 
 PYBIND11_MODULE(MeshPattern, m)
 {
+    m.doc() = "Mesh Pattern";
+    m.def("add", &add, "A function which adds two numbers");
+    m.def("createMesh", [](){
+        return iglMesh();
+    });
+    
     py::class_<iglMesh>(m, "iglMesh")
             .def(py::init())
             .def("loadMesh", &iglMesh::loadMesh)
